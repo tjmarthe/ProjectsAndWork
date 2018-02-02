@@ -1,0 +1,286 @@
+//implementation of string class functions
+
+#include "string.hpp"
+#include <math.h>
+
+String::String(){
+  str = new char[STRING_SIZE];
+  capacityOfString = STRING_SIZE;
+  str[0] = '\0';
+}
+
+String::String(int size){
+  str = new char[size];
+  capacityOfString = size;
+  str[0] ='\0';
+}
+
+
+String::String(char ch){
+  str = new char[STRING_SIZE];
+  capacityOfString = STRING_SIZE;
+  str[0] = ch;
+}
+
+String::String(const char* s){
+  int i = 0;
+  capacityOfString = STRING_SIZE;
+  str = new char[STRING_SIZE];
+  while(s[i] != 0){
+    str[i] = s[i];
+    i++;
+    if(i>= capacityOfString - 1){break;}
+   }
+  str[i] = '\0';
+}
+
+String::String(const String& rhs){
+  int i = 0;
+  capacityOfString = rhs.capacityOfString;
+  str = new char[capacityOfString];
+  while(rhs.str[i] != 0){
+    str[i] =rhs.str[i];
+    i++;
+    if( i >= capacityOfString) break;
+  }
+  str[i] = '\0';
+}
+
+String::~String(){
+  delete [] str;
+}
+
+String::String(int cap, const char* s){
+  if(cap <= 0)
+    capacityOfString = STRING_SIZE;
+  else
+    capacityOfString = cap;
+  str = new char [capacityOfString];
+  int i = 0;
+  while(s[i] != '\0'){
+   str[i] = s[i];
+    ++i;
+    if(i >= capacityOfString - 1) break;
+  }
+  str[i] = '\0';
+ }
+
+void String::swap(String& rhs){
+  char* temp =str;
+  str = rhs.str;
+  rhs.str = temp;
+
+  int temp1 = capacityOfString;
+  capacityOfString = rhs.capacityOfString;
+  rhs.capacityOfString = temp1;
+}
+
+bool String::operator==(const String& rhs)const{
+  int i = 0;
+  while(str[i] != '\0' && rhs.str[i] != '\0'){
+    if(str[i] != rhs.str[i]) return false;
+    ++i;
+  }
+  return(str[i] == rhs.str[i]);
+}
+
+String& String::operator=(String rhs){
+  swap(rhs);
+  return *this;
+}
+
+void String::resetCapacity(int cap){
+  String temp(cap, str);
+  swap(temp);
+}
+
+int String::capacity() const{
+  return capacityOfString;
+}
+
+int String::length() const{
+  int len = 0;
+  while(str[len] != '\0'){
+    ++len;
+  }
+  return len;
+}
+
+char String::operator[](int index)const{
+  return str[index];
+}
+
+char& String::operator[](int index){
+  return str[index];
+}
+
+std::ostream& operator<<(std::ostream& ostr, const String& rhs){
+  for(int i = 0; rhs.str[i] != '\0'; i++){
+    ostr<<rhs.str[i];
+ }
+  return ostr;
+}
+std::istream& operator>>(std::istream& istr, String& s){
+  char* temp = new char[s.capacityOfString];
+  if(!istr.eof()){
+    istr >> temp;
+  }else{
+    temp[0] = '\0';
+  }
+  s = String(temp);
+  return istr;
+}
+
+String String::operator+(const String& rhs)const{
+  int newCapacity = String::length() + rhs.length() + 1;
+  if(newCapacity < STRING_SIZE)
+    newCapacity = STRING_SIZE;
+  else
+    newCapacity += STRING_SIZE;
+  String result(newCapacity, str);
+  int i = 0;
+  while(rhs.str[i] != '\0'){
+    result.str[length()+i] = rhs.str[i];
+    ++i;
+ }
+  result.str[i + length()] = '\0';
+  return result;
+}
+
+String operator+(const char lhs[], const String& rhs){
+  return String(lhs) + rhs;
+}
+
+String operator+(const char lhs, const String& rhs){
+  return String(lhs) + rhs;
+}
+
+bool operator==(const char lhs[], const String& rhs){
+  return (String(lhs)==rhs);
+}
+
+bool operator==(const char lhs, const String& rhs){
+  return (String(lhs) == rhs);
+}
+
+String String::subString(int start, int end)const{
+  String result(capacityOfString);
+  int i = start;
+  while( i <= end){
+    result.str[i - start] = str[i];
+    ++i;
+  }
+  result.str[i - start] = '\0';
+  return result;
+}
+int String::findSubString(const String& s, int pos)const{
+  for(int i = pos; i <= length() - s.length(); i++){
+    String temp = subString(i, i + s.length()-1);
+    if(temp == s){
+      return i;
+    }
+  }
+  return -1;
+}
+
+bool String::operator<(const String& s)const{
+  int i = 0;
+  while((str[i] != '\0' && s.str[i] != '\0') &&(str[i] == s.str[i]))
+    ++i;
+
+    if(str[i] == '\0' && s.str[i] == '\0') return false;
+    if(str[i] == '\0') return true;
+    if(str[i] < s.str[i]) return true;
+
+  return false;
+}
+
+bool operator<(const char *lhs, const String& s){
+  return String(lhs) < s;
+}
+
+bool operator<(const char lhs, const String& s){
+  return String(lhs) < s;
+}
+
+bool operator<=(const String& lhs, const String& rhs){
+  return (lhs<rhs) || (lhs == rhs);
+}
+
+bool operator<=(const char *lhs, const String& rhs){
+  return (String(lhs)<rhs) || (String(lhs)==rhs);
+}
+
+bool operator<=(const char lhs, const String& rhs){
+  return (String(lhs)<rhs) || (String(lhs) == rhs);
+}
+
+bool operator>(const String& lhs, const String& rhs){
+    return rhs < lhs;
+}
+bool operator>(const char *lhs, const String& rhs){
+  return rhs < String(lhs);
+}
+
+bool operator>(const char lhs, const String& rhs){
+  return rhs < String(lhs);
+}
+
+bool operator!=(const String& lhs, const String& rhs){
+  return !(lhs == rhs);
+}
+bool operator!=(const char lhs, const String& rhs){
+  return !(rhs == String(lhs));
+}
+bool operator!=(const char* lhs, const String& rhs){
+  return !(rhs == String(lhs));
+}
+
+
+String String::clear(){
+  for(int i = 0; i < capacityOfString; i++){
+     str[i]=0;
+  }
+  return *this;
+}
+
+std::vector<String> String::split(char ch)const{
+    int i, j;
+    i = 0;
+    j = 0;
+    String result(capacityOfString);
+    std::vector<String> s;
+    while(str[i] != '\0'){
+      result.str[j] = str[i];
+      if(str[i] == ch || str[i] == '\0'){
+        j--;
+        result.str[j] = '\0';
+        s.push_back(result);
+        result.clear();
+        j = 0;
+        i++;
+      }
+      else{
+        i++;
+        j++;
+      }
+    }
+    return s;
+}
+
+int String::StringToInt()const{
+  int i = 0;
+  int result = 0;
+
+  while(str[i] != '\0'){
+    if( str[i] == '\n' || str[i] == ' '){i++;}
+    result *= 10;
+    result += str[i]-'0';
+    i++;
+  }
+  return result;
+}
+
+
+
+

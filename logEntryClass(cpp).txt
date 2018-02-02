@@ -1,0 +1,140 @@
+
+//
+//
+// File:        logentry.cpp
+//
+// Version:     1.0
+// Date:
+// Author:
+//
+// Description: Class implementation for a log entry.
+//
+//
+
+////////////////////////////////////////////////////////////
+
+#include "logentry.hpp"
+
+//////////////////////////////////////////////////////////
+// REQUIRES:
+// ENSURES:
+//
+LogEntry::LogEntry(String s) {
+    String tempYear;
+    String bytes;
+    String DateD, DateM, DateY;
+    String TimeH, TimeM, TimeS;
+    int HourActual, MinuteActual, SecondActual, YearActual, BytesActual;
+    std::vector<String> vec = s.split(' ');
+    if(vec.size() != 10){
+      DateD = 0;
+      DateM = 0;
+      YearActual = 0;
+      HourActual = 0;
+      MinuteActual = 0;
+      SecondActual = 0;
+      BytesActual = 0;
+      host = '\0';
+      date.setDate(DateD, DateM, YearActual);
+      time.setTime(HourActual, MinuteActual, SecondActual);
+      request = '\0';
+      status = '\0';
+      host = '\0';
+      number_of_bytes = 0;
+    }
+    else {
+      host = vec[0];
+      DateD = vec[3].subString(1, 2);
+      DateM = vec[3].subString(4, 6);
+      DateY = vec[3].subString(8, 11);
+      TimeH = vec[3].subString(12, 13);
+      TimeM = vec[3].subString(14, 15);
+      TimeS = vec[3].subString(16, 17);
+      HourActual = TimeH.StringToInt();
+      MinuteActual = TimeM.StringToInt();
+      SecondActual = TimeS.StringToInt();
+      YearActual = DateY.StringToInt();
+      date.setDate(DateD, DateM, YearActual);
+      time.setTime(HourActual, MinuteActual, SecondActual);
+      request = vec[4].subString(1, 4);
+	 status = vec[8].subString(0, 3);
+      bytes = vec[9];
+      BytesActual = bytes.StringToInt();
+      number_of_bytes = BytesActual;
+    }
+
+}
+
+
+//////////////////////////////////////////////////////////
+// REQUIRES:
+// ENSURES:
+//
+
+
+std::ostream& operator<<(std::ostream& out, const LogEntry& log){
+  out << log.host << " " << log.date << " " << log.time << " " << log.request << " " << log.status << " " << log.nu\
+mber_of_bytes << std::endl;
+  return out;
+}
+
+std::vector<LogEntry> parse(std::istream& in) {
+  int i = 0;
+  std::vector<LogEntry> result;
+  char ch;
+  char ArrayForString[82];
+  while(!in.eof()){
+    while(ch != '\n'){
+      in.get(ch);
+      ArrayForString[i] = ch;
+	++i;
+    }
+    String wholeLine(ArrayForString);
+    result.push_back(LogEntry(wholeLine));
+    in.get(ch);
+  }
+
+  return result;
+}
+
+
+
+//////////////////////////////////////////////////////////
+// REQUIRES:
+// ENSURES:
+//
+void output_all(std::ostream& out, const std::vector<LogEntry>& l) {
+  for(unsigned long i = 0; i < l.size(); i++){
+    out << l[i];
+    out << '\n';
+    out << '\n';
+  }
+}
+
+//////////////////////////////////////////////////////////
+// REQUIRES:
+// ENSURES:
+//
+void by_host(std::ostream& out, const std::vector<LogEntry>& l) {
+for(unsigned long i = 0; i < l.size(); i++){
+    out << "host: " << l[i].getHost() << std::endl;
+    out << "Date: " << l[i].getDate() << std::endl;
+    out << "Time: " << l[i].getTime() << std::endl;
+    out << "request: " << l[i].getRequest()  << std::endl;
+    out << "status: " << l[i].getStatus() << std::endl;
+    out << "bytes: " << l[i].getBytes() << std::endl;
+  }
+}
+
+//////////////////////////////////////////////////////////
+// REQUIRES:
+// ENSURES:
+//
+int byte_count(const std::vector<LogEntry>& l) {
+  int result = 0;
+  for(unsigned long i = 0; i < l.size(); i++){
+    result += l[i].getBytes();
+  }
+  std::cout << "Total number of bytes is: " <<  result <<std::endl;
+    return result;
+}

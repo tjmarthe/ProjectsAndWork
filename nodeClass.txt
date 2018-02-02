@@ -1,0 +1,32 @@
+class stack{
+	private:
+		node<T>* tos;
+		
+	public:
+		stack(const stack<T>& rhs){
+			node<T>* bottom;
+			node<T>* temp;
+			temp = rhs.tos;
+			
+			while(temp!=0){
+				if(tos == 0){
+					tos = new node<T> (temp -> data);
+					bottom = tos;
+					temp = temp -> next;
+				}else{
+					bottom->next = new node<T> (temp->data);
+					bottom = bottom -> next;
+					temp = temp -> next;
+					}
+					
+			}
+				
+		T pop(){
+			T result = tos->data;
+			node<T>* temp = tos;
+			tos = tos -> next;
+			delete temp;
+			return data;
+		}
+
+};

@@ -1,0 +1,35 @@
+class btree{
+	private:
+		T data;
+		bnode<T>* right;
+		bnode<T>* left;
+		int tree_size;
+		bool isEmpty;
+	public;
+		void insert(const T& x){
+			if(x == data){
+				data = x;//replacing the node with the value x if that value already exists
+				isEmpty = false;
+			}
+			if(x<data)
+				if(left) left->insert(x);//recursively moving to the left most node and placing it there
+				else left = new btree<T>(x);//creating new btree once left most postion for it is found
+			if(x>data)
+				if(right) right ->insert(x);//recurively moving to right most node and placing it there
+				else right = new btree<T>(x);//creating new btree once right most position for it is found
+		}
+		bool bsearch(const T& x){
+			//same thing as insert with replaceing creating new btree with returning false and
+			//also replacing the recursive call with bsearch
+		}
+		void preorder(ostream& out){
+			//output NODE
+			//go left preform preoder (through recursion)
+			//go right preform preorder (through recursion)
+			out << data << std::endl;
+			if (left)
+				left -> preorder(out);
+			if (right)
+				right -> preocer(out);
+		}// postorder and inorder are same thing, just change where u out the date, in->middle, post->last
+};

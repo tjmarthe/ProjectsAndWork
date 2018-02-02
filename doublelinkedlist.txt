@@ -1,0 +1,29 @@
+class double_L_List{
+	private:
+		dnode<T>* begin;
+		dnode<T>* end;
+	public:
+		double_L_List{const double_L_List& actual){
+			dnode<T>* temp = actual.begin;
+			if(begin == 0){
+				begin = new dnode<T>* (temp->data);
+				end = being;//create first node and set begin and end to it, the value is the same as temp
+			}else{
+				end->next = new dnode<T>* (temp->data);//if not first node, creat node at the end with temp's value
+				end->next->prev = end;//connect new node back arrow to the list
+				end = end->next;// move end to new node
+			}
+			temp = temp->next;// move temp
+		
+		}
+		~double_L_List(){
+			dnode<T>* temp;
+			while(temp != 0){
+				temp = begin;
+				begin = beign -> next;
+				delete temp;
+			}
+		
+		}
+
+};

@@ -1,0 +1,36 @@
+class iterator{
+	private: 
+		snode<t>* NodePtr;
+		snode<t>* Tree:
+	Public:
+		operator++(){
+			snode<T>* p;
+			if(Nodeptr == Null){
+				NodePtr = Tree->root;
+				if(NodePtr==NULL);
+					//throw exception
+				else {
+					while(NodePtr->left != NULL)
+						NodePtr = NodePtr->left;
+					}					
+			}
+			if(NodePtr->right != NULL){
+				NodePtr = NodePtr->right;
+				while(NodePtr -> left != null)
+					NodePtr = NodePtr->left;
+			}	
+			else{
+				p = NodePtr->parent;
+				while(p != Null && NodePtr = p->right){
+					NodePtr = p;
+					p = p->parent;
+				}
+			return *this;	
+		}
+		operator++(int){
+			snode<T>* temp = this;
+			++this;
+			return temp;
+		}
+		
+};

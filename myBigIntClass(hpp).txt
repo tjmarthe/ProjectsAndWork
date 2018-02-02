@@ -1,0 +1,25 @@
+//header file for bigint
+
+#include <iostream>
+
+const int BIGINT_DIGITS = 100;
+
+class bigint {
+ private:
+  int bigNumber[BIGINT_DIGITS];
+
+  public:
+  bigint();
+  bigint(int num);
+  bigint(char bigNum[]);
+  bool operator==(const bigint& rhs)const;
+  friend std::ostream& operator<<(std::ostream& ostr, const bigint& num);
+  friend std::istream& operator>>(std::istream& instr,  bigint& num);
+  int operator[](int num)const;
+  int operator[](int num);
+  bigint& operator=(const bigint& rhs);
+  bigint operator+(const bigint&)const;
+};
+
+
+

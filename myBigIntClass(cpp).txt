@@ -1,0 +1,120 @@
+#include "bigint.hpp"
+
+bigint::bigint(){ //default constructor
+  for(int x = 0; x < BIGINT_DIGITS; x++){
+    bigNumber[x] = 0;
+  }
+
+}
+
+bigint::bigint(int num){ //integer constructor
+
+  int x = 0;
+  while(num > 0){
+    bigNumber[x] = num%10;
+    num = num/10;
+    ++x;
+  }
+  for( ; x < BIGINT_DIGITS; ++x){
+    bigNumber[x] = 0;
+  }
+
+
+}
+
+bigint::bigint(char bigNum[]){ //character array constructor
+  int x = 0;
+
+  for(int y=0; y < BIGINT_DIGITS; ++y)
+    bigNumber[y] = 0;
+
+  while(bigNum[x] != 0)
+    ++x;
+    --x;
+
+  int i =0;
+  while(x>=0){
+    bigNumber[i] = bigNum[x] -'0';
+    --x;
+    i++;
+  }
+
+}
+
+bool bigint::operator==(const bigint& rhs)const{ //equality operator
+  for(int x=0; x < BIGINT_DIGITS; x++){
+
+      if(bigNumber[x] != rhs.bigNumber[x])
+        return false;
+  }
+  return true;
+}
+std::ostream& operator<<(std::ostream& ostr, const bigint& big){ //output operator
+  int x;
+
+  for( x=BIGINT_DIGITS-1; x >=0; x--){
+    if(big.bigNumber[x]==0){}
+    if(big.bigNumber[x]!=0){
+      for( ; x >= 0; x--){
+        if(x == 50){std::cout<<'\n';}
+        if(x > 50 && x%50 == 0){std::cout<<'\n';}
+ostr<<big.bigNumber[x];
+      }
+    }
+
+  }
+  if(big == 0){std::cout << 0;}
+        return ostr;
+
+  }
+bigint& bigint::operator=(const bigint& rhs){
+
+  for(int i = 0; i < BIGINT_DIGITS; i++){
+    bigNumber[i] = rhs.bigNumber[i];
+   }
+
+  return* this;
+}
+std::istream& operator>>(std::istream& instr, bigint& num){ //input operator
+  char buffer[BIGINT_DIGITS];
+  int i = 0;
+  char ch = 0;
+  while(ch != ';' && !instr.eof()){
+    instr>>ch;
+    if(ch == '\n' || ch == ' ')
+      instr>>ch;
+
+    buffer[i] = ch;
+    i++;
+  }
+  buffer[i] = '\0';
+
+  num = bigint(buffer);
+  return instr;
+}
+
+int bigint::operator[](int num)const{ //subscript operator
+  return bigNumber[num];
+}
+
+int bigint::operator[](int num){ //subscript operator
+  return bigNumber[num];
+}
+bigint bigint::operator+(const bigint& b)const{ //addition operator
+  bigint sum;
+  int i = 0;
+  int num = 0;
+  int carryDigit = 0;
+  while(i < BIGINT_DIGITS){
+    num = bigNumber[i] + b.bigNumber[i] + carryDigit;
+    if(num >= 10){
+      sum.bigNumber[i] = num%10;
+      carryDigit = 1;
+    }else {
+      sum.bigNumber[i] = num;
+      carryDigit = 0;
+    }
+    ++i;
+  }
+  return sum;
+}
